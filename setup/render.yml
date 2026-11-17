@@ -1,0 +1,73 @@
+name: render
+
+# Make starts this with a repository_dispatch (event_type "render") whose client_payload is:
+#   { "spec": { ...post spec... }, "callback": "https://hook.eu1.make.com/..." }
+# Output files are committed to renders/ and served publicly through GitHub Pages,
+# then the result (public URLs or errors) is POSTed back to the Make webhook.
+on:
+  repository_dispatch:
+    types: [render]
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: "Post spec JSON"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install renderer
+        run: |
+          pip install -r requirements.txt
+          npm install --no-save --silent @fontsource/dm-serif-display@5 @fontsource/dm-sans@5 @fontsource/jetbrains-mono@5 @fontsource/tajawal@5
+          mkdir -p assets/fonts
+          cp node_modules/@fontsource/dm-serif-display/files/dm-serif-display-latin-400-{normal,italic}.woff2 assets/fonts/
+          cp node_modules/@fontsource/dm-sans/files/dm-sans-latin-{400,500,700}-{normal,italic}.woff2 assets/fonts/
+          cp node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-{400,500}-normal.woff2 assets/fonts/
+          cp node_modules/@fontsource/tajawal/files/tajawal-{arabic,latin}-{400,500,700,800}-normal.woff2 assets/fonts/
+          python -m playwright install --with-deps chromium
+          command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg)
+
+      - name: Write spec
+        env:
+          SPEC_DISPATCH: ${{ toJSON(github.event.client_payload.spec) }}
+          SPEC_MANUAL: ${{ github.event.inputs.spec }}
+        run: |
+          if [ -n "$SPEC_MANUAL" ]; then printf '%s' "$SPEC_MANUAL" > spec.json; else printf '%s' "$SPEC_DISPATCH" > spec.json; fi
+
+      - name: Render
+        id: render
+        continue-on-error: true
+        run: python -m studio spec.json out
+
+      - name: Publish files
+        id: publish
+        run: python scripts/publish.py out
+        env:
+          REPO: ${{ github.repository }}
+
+      - name: Report back to Make
+        if: always()
+        env:
+          CALLBACK: ${{ github.event.client_payload.callback }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python scripts/callback.py out/result.json
