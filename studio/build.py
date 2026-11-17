@@ -100,7 +100,7 @@ def one(spec):
                         photo_info(spec)[0], spec["note"], rtl=rtl, outline=L.GOLD if bg == L.CREAM else L.WHITE)
     if fmt == "photo_line":
         pid, zone, tone = photo_info(spec)
-        col = L.GOLD_LIGHT if tone == "light" else L.GREEN
+        col = L.WHITE if tone == "light" else L.GREEN
         return L.f_photo_line(pid, accent(h, col, lang), rtl=rtl, sub=spec.get("sub"), zone=zone, tone=tone)
     if fmt == "split":
         band = L.BANDS.get(spec["band"], L.PEACH)
@@ -110,7 +110,7 @@ def one(spec):
         return L.f_framed(photo_info(spec)[0], accent(h, L.GREEN, lang), frame, rtl=rtl)
     if fmt == "reel":
         pid, zone, tone = photo_info(spec)
-        col = L.GOLD_LIGHT if tone == "light" else L.GREEN
+        col = L.WHITE if tone == "light" else L.GREEN
         return L.f_reel(pid, accent(h, col, lang), rtl=rtl, sub=spec.get("sub"), zone=zone, tone=tone)
     raise SpecError(fmt)
 
