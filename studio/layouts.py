@@ -10,6 +10,7 @@ import math
 
 W, H = 1080, 1350
 CREAM, LILAC, GOLD, GREEN, PEACH, INK, WHITE = "#FCF3E8", "#D5B6E8", "#E4B03A", "#2F6A3E", "#EFB089", "#2C221B", "#FFFFFF"
+GOLD_LIGHT = "#F6CB62"  # gold accent for text on dark photo fades (brand gold is too dark there)
 BANDS = {"cream": CREAM, "lilac": LILAC, "peach": PEACH}
 SERIF, SANS, MONO, AR = "DM Serif Display", "DM Sans", "JetBrains Mono", "Tajawal"
 M = 96  # outer margin
@@ -176,7 +177,7 @@ def f_arch(bg, eyebrow, head, sub, pid, note, rtl=False, outline=GOLD, ink=INK):
 def scrim(zone, tone, w, h):
     """Contrast layer between photo and text: dark fade under white text, light veil under dark text."""
     if tone == "light":
-        stops = [{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": "rgba(28,20,14,0.78)"}]
+        stops = [{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": "rgba(28,20,14,0.84)"}]
         y0, y1 = ("35%", "100%") if zone == "bottom" else ("45%", "0%")
     else:
         stops = [{"offset": "0%", "color": "rgba(252,243,232,0)"}, {"offset": "100%", "color": "rgba(252,243,232,0.62)"}]
@@ -188,23 +189,33 @@ def scrim(zone, tone, w, h):
             "fill_y1": y1, "fill_color": stops}
 
 
+def stack(x, y, w, children, anchor_bottom=False, gap=24):
+    """Vertical group laid out by the renderer: items never overlap, and a bottom-anchored group grows upward."""
+    return {"type": "stack", "x": f"{x} px", "y": f"{y} px", "width": f"{w} px", "x_anchor": "0%",
+            "y_anchor": "100%" if anchor_bottom else "0%", "gap": gap, "children": children}
+
+
+def _line_stack(line, sub, rtl, tone, size, sub_size, logo_w, width, anim=False):
+    ink = WHITE if tone == "light" else INK
+    sh = {"shadow": tone}
+    a = (lambda d, s: {"anim": {"type": d, "start": s, "dur": 0.8}}) if anim else (lambda d, s: {})
+    kids = [{**sparkle(0, 0, 34 if not anim else 40, GOLD), **a("pop", 0.5)}]
+    if rtl:
+        kids.append({**text(0, 0, width, line, AR, size * 0.9, ink, "800", lh=130, align="center", rtl=True, **sh), **a("fade_up", 0.8), "gap": 18})
+        if sub: kids.append({**text(0, 0, width, sub, AR, sub_size * 1.3, ink, "700", align="center", rtl=True, **sh), **a("fade_up", 1.6), "gap": 26})
+    else:
+        kids.append({**text(0, 0, width, line, SERIF, size, ink, lh=104, align="center", ls=-10, **sh), **a("fade_up", 0.8), "gap": 18})
+        if sub: kids.append({**text(0, 0, width, sub.upper(), MONO, sub_size, ink, "500", align="center", ls=120, **sh), **a("fade_up", 1.6), "gap": 30})
+    kids.append({**logo(0, 0, logo_w, mono=WHITE if tone == "light" else INK), **a("fade_up", 2.4), "gap": 34})
+    return kids
+
+
 def f_photo_line(pid, line, rtl=False, sub=None, zone="bottom", tone="light"):
     """Floward-style: full-bleed photo, one short line placed in the photo's empty area.
     zone/tone come from the photo library (text_zone, text_tone)."""
-    ink = WHITE if tone == "light" else INK
-    sh = {"shadow": tone}
-    els = [photo(pexels(pid), 0, 0, W, H), scrim(zone, tone, W, H)]
-    y = 130 if zone == "top" else H - 430
-    els.append(sparkle(W / 2, y - 45, 30, GOLD))
-    if rtl:
-        els.append(text(M, y, W - 2 * M, line, AR, 74, ink, "800", lh=130, align="center", rtl=True, **sh))
-        if sub: els.append(text(M, y + 200, W - 2 * M, sub, AR, 34, ink, "700", align="center", rtl=True, **sh))
-    else:
-        els.append(text(M, y, W - 2 * M, line, SERIF, 84, ink, lh=104, align="center", ls=-10, **sh))
-        if sub: els.append(text(M, y + 222, W - 2 * M, sub.upper(), MONO, 26, ink, "500", align="center", ls=120, **sh))
-    ly = (y + 285) if zone == "top" else (H - 115)
-    els.append(logo(W / 2 + 115, ly, 230, mono=WHITE if tone == "light" else INK, anchor_right=True))
-    return doc(INK, els)
+    kids = _line_stack(line, sub, rtl, tone, 84, 26, 230, W - 2 * M)
+    grp = stack(M, 110 if zone == "top" else H - 90, W - 2 * M, kids, anchor_bottom=(zone != "top"))
+    return doc(INK, [photo(pexels(pid), 0, 0, W, H), scrim(zone, tone, W, H), grp])
 
 def f_split(pid, eyebrow, head, band=PEACH, rtl=False):
     """Photo on top, solid brand-colour band below with the headline; sunburst on the seam."""
@@ -236,23 +247,11 @@ def f_framed(pid, caption, frame=LILAC, rtl=False, accent=WHITE):
 RW, RH = 1080, 1920
 
 def f_reel(pid, line, rtl=False, sub=None, zone="bottom", tone="light", duration=7.0):
-    """Animated still: slow push-in on the photo, sparkle + headline + sub fade up, logo lands last."""
-    ink = WHITE if tone == "light" else INK
-    sh = {"shadow": tone}
-    els = [{**photo(pexels(pid), 0, 0, RW, RH), "anim": {"type": "zoom", "from": 1.0, "to": 1.09}}, scrim(zone, tone, RW, RH)]
-    y = 300 if zone == "top" else RH - 900   # keep clear of the Reels caption/buttons area
-    els.append({**sparkle(RW / 2, y - 60, 40, GOLD), "anim": {"type": "pop", "start": 0.5, "dur": 0.5}})
-    if rtl:
-        els.append({**text(M, y, RW - 2 * M, line, AR, 88, ink, "800", lh=130, align="center", rtl=True, **sh),
-                    "anim": {"type": "fade_up", "start": 0.8, "dur": 0.9}})
-        if sub: els.append({**text(M, y + 250, RW - 2 * M, sub, AR, 40, ink, "700", align="center", rtl=True, **sh),
-                            "anim": {"type": "fade_up", "start": 1.6, "dur": 0.8}})
-    else:
-        els.append({**text(M, y, RW - 2 * M, line, SERIF, 100, ink, lh=104, align="center", ls=-10, **sh),
-                    "anim": {"type": "fade_up", "start": 0.8, "dur": 0.9}})
-        if sub: els.append({**text(M, y + 260, RW - 2 * M, sub.upper(), MONO, 32, ink, "500", align="center", ls=110, **sh),
-                            "anim": {"type": "fade_up", "start": 1.6, "dur": 0.8}})
-    els.append({**logo(RW / 2 + 140, y + 350, 280, mono=WHITE if tone == "light" else INK, anchor_right=True),
-                "anim": {"type": "fade_up", "start": 2.4, "dur": 0.8}})
+    """Animated still: slow push-in on the photo, sparkle + headline + sub fade up, logo lands last.
+    Text stays clear of the Reels UI (top bar and the caption/buttons area at the bottom)."""
+    kids = _line_stack(line, sub, rtl, tone, 100, 32, 280, RW - 2 * M, anim=True)
+    grp = stack(M, 260 if zone == "top" else RH - 560, RW - 2 * M, kids, anchor_bottom=(zone != "top"))
+    els = [{**photo(pexels(pid), 0, 0, RW, RH), "anim": {"type": "zoom", "from": 1.0, "to": 1.09}},
+           scrim(zone, tone, RW, RH), grp]
     return {"output_format": "mp4", "width": RW, "height": RH, "fill_color": INK, "duration": duration,
             "frame_rate": 30, "elements": els}
