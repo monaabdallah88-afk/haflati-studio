@@ -75,7 +75,7 @@ def pill(x, y, label, face, bg=CREAM, w=None):
     return [rect(x, y, w, 64, bg, 32), *smiley(x + 38, y + 32, 28, face, WHITE if face == GREEN else INK),
             text(x + 66, y + 17, w - 80, label, SANS, 27, INK, "500")]
 
-def footer(dark=False, note=None, note_color=GOLD):
+def footer(dark=False, note=None, note_color=GREEN):
     els = [logo(W - M, H - 112, 250, mono=WHITE if dark else None, anchor_right=True)]
     if note: els.append(text(M, H - 100, 560, note, SANS, 24, note_color, "500"))
     return els
@@ -109,7 +109,7 @@ def f_problem(head, items, tagline):
 def f_chips(eyebrow, head, chips, sign_off):
     faces = [GOLD, GREEN, LILAC, PEACH]
     els = [*sunburst(M + 40, 150, 92, ray=INK, core=GOLD, dot=INK), sparkle(W - M - 30, 140, 50, GREEN),
-           text(M, 330, 800, eyebrow, SERIF, 42, GREEN, style="italic"),
+           text(M, 330, 800, eyebrow, SERIF, 42, INK, style="italic"),
            text(M, 400, W - 2 * M, head, SERIF, 104, INK, lh=104, ls=-10)]
     cx, cy = M, 830
     for i, c in enumerate(chips):
@@ -132,11 +132,11 @@ def f_bilingual(en_head, ar_head, ar_sub):
 def f_hero(line1, word, eyebrow, w_word):
     els = [sparkle(150, 170, 34, LILAC), sparkle(W - 150, 330, 40, GOLD), sparkle(170, H - 330, 30, GOLD),
            sparkle(W - 170, H - 420, 34, LILAC),
-           text(M, 470, W - 2 * M, line1, SERIF, 120, GREEN, lh=100, align="center", ls=-10),
-           text(M, 600, W - 2 * M, f"[style italic]{word}[/style][color {GREEN}]?[/color]", SERIF, 210, LILAC, lh=100,
+           text(M, 470, W - 2 * M, line1, SERIF, 120, INK, lh=100, align="center", ls=-10),
+           text(M, 600, W - 2 * M, f"[style italic]{word}[/style]?", SERIF, 210, GREEN, lh=100,
                 align="center", ls=-20),
            wavy((W - w_word) / 2, 790, w_word, GOLD, 9),
-           text(M, 900, W - 2 * M, eyebrow.upper(), MONO, 24, "#9A8C7E", "500", align="center", ls=160),
+           text(M, 900, W - 2 * M, eyebrow.upper(), MONO, 24, "#6E6258", "500", align="center", ls=160),
            logo(W / 2 + 125, H - 140, 250, anchor_right=True)]
     return doc(CREAM, els)
 
@@ -156,7 +156,7 @@ def f_arch(bg, eyebrow, head, sub, pid, note, rtl=False, outline=GOLD, ink=INK):
     tx, tw = (ax + aw + 48, W - M - (ax + aw + 48)) if rtl else (M, ax - M - 48)
     al = "right" if rtl else "left"
     if rtl:
-        top = [text(M, 120, W - 2 * M, eyebrow, AR, 34, GREEN, "700", align="right", rtl=True),
+        top = [text(M, 120, W - 2 * M, eyebrow, AR, 34, GREEN if bg == CREAM else INK, "700", align="right", rtl=True),
                text(M, 185, W - 2 * M, head, AR, 92, ink, "800", lh=125, align="right", rtl=True),
                text(tx, ay + 70, tw, sub, AR, 38, ink, "400", lh=150, align="right", rtl=True)]
     else:
@@ -168,30 +168,42 @@ def f_arch(bg, eyebrow, head, sub, pid, note, rtl=False, outline=GOLD, ink=INK):
            *sunburst(ax + (aw if rtl else 0), ay + 90, 96),
            sparkle((W - M - 30) if rtl else (M + 30), ay + 420, 34, GOLD), sparkle((W - M - 120) if rtl else (M + 150), ay + 500, 22, WHITE if bg != CREAM else LILAC),
            *top,
-           text(tx, H - 190, tw, note, AR if rtl else SANS, 28 if rtl else 24, GREEN if rtl else (GOLD if bg == CREAM else INK),
+           text(tx, H - 190, tw, note, AR if rtl else SANS, 28 if rtl else 24, GREEN if (rtl and bg == CREAM) else (GREEN if bg == CREAM else INK),
                 "700" if rtl else "500", align=al, rtl=rtl),
            logo(W - M if rtl else M, H - 120, 230, anchor_right=rtl)]
     return doc(bg, els)
+
+def scrim(zone, tone, w, h):
+    """Contrast layer between photo and text: dark fade under white text, light veil under dark text."""
+    if tone == "light":
+        stops = [{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": "rgba(28,20,14,0.78)"}]
+        y0, y1 = ("35%", "100%") if zone == "bottom" else ("45%", "0%")
+    else:
+        stops = [{"offset": "0%", "color": "rgba(252,243,232,0)"}, {"offset": "100%", "color": "rgba(252,243,232,0.62)"}]
+        y0, y1 = ("40%", "100%") if zone == "bottom" else ("50%", "0%")
+    if zone == "top":
+        stops = [{"offset": "0%", "color": stops[1]["color"]}, {"offset": "100%", "color": stops[0]["color"]}]
+        y0, y1 = y1, y0
+    return {**rect(0, 0, w, h, None), "fill_mode": "linear", "fill_x0": "50%", "fill_y0": y0, "fill_x1": "50%",
+            "fill_y1": y1, "fill_color": stops}
+
 
 def f_photo_line(pid, line, rtl=False, sub=None, zone="bottom", tone="light"):
     """Floward-style: full-bleed photo, one short line placed in the photo's empty area.
     zone/tone come from the photo library (text_zone, text_tone)."""
     ink = WHITE if tone == "light" else INK
-    els = [photo(pexels(pid), 0, 0, W, H)]
-    if zone == "bottom" and tone == "light":
-        els.append({**rect(0, 0, W, H, None), "fill_mode": "linear", "fill_x0": "50%", "fill_y0": "45%", "fill_x1": "50%",
-                    "fill_y1": "100%", "fill_color": [{"offset": "0%", "color": "rgba(28,20,14,0)"},
-                                                      {"offset": "100%", "color": "rgba(28,20,14,0.45)"}]})
-    y = 140 if zone == "top" else H - 400
-    els.append(sparkle(W / 2, y - 50, 30, GOLD if tone == "dark" else WHITE))
+    sh = {"shadow": tone}
+    els = [photo(pexels(pid), 0, 0, W, H), scrim(zone, tone, W, H)]
+    y = 130 if zone == "top" else H - 430
+    els.append(sparkle(W / 2, y - 45, 30, GOLD))
     if rtl:
-        els.append(text(M, y, W - 2 * M, line, AR, 72, ink, "800", lh=130, align="center", rtl=True))
-        if sub: els.append(text(M, y + 190, W - 2 * M, sub, AR, 30, ink, "500", align="center", rtl=True))
+        els.append(text(M, y, W - 2 * M, line, AR, 74, ink, "800", lh=130, align="center", rtl=True, **sh))
+        if sub: els.append(text(M, y + 200, W - 2 * M, sub, AR, 34, ink, "700", align="center", rtl=True, **sh))
     else:
-        els.append(text(M, y, W - 2 * M, line, SERIF, 80, ink, lh=104, align="center", ls=-10))
-        if sub: els.append(text(M, y + 215, W - 2 * M, sub.upper(), MONO, 22, ink, "500", align="center", ls=140))
-    ly = (y + 270) if zone == "top" else (H - 120)
-    els.append(logo(W / 2 + 105, ly, 210, mono=WHITE if tone == "light" else None, anchor_right=True))
+        els.append(text(M, y, W - 2 * M, line, SERIF, 84, ink, lh=104, align="center", ls=-10, **sh))
+        if sub: els.append(text(M, y + 222, W - 2 * M, sub.upper(), MONO, 26, ink, "500", align="center", ls=120, **sh))
+    ly = (y + 285) if zone == "top" else (H - 115)
+    els.append(logo(W / 2 + 115, ly, 230, mono=WHITE if tone == "light" else INK, anchor_right=True))
     return doc(INK, els)
 
 def f_split(pid, eyebrow, head, band=PEACH, rtl=False):
@@ -200,7 +212,7 @@ def f_split(pid, eyebrow, head, band=PEACH, rtl=False):
     els = [photo(pexels(pid), 0, 0, W, py), rect(0, py, W, H - py, band),
            *sunburst(W - M - 50 if not rtl else M + 50, py, 110)]
     if rtl:
-        els += [text(M, py + 80, W - 2 * M, eyebrow, AR, 32, GREEN, "700", align="right", rtl=True),
+        els += [text(M, py + 80, W - 2 * M, eyebrow, AR, 32, INK if band == LILAC else GREEN, "700", align="right", rtl=True),
                 text(M, py + 130, W - 2 * M, head, AR, 68, INK, "800", lh=125, align="right", rtl=True),
                 logo(M, H - 110, 210)]
     else:
@@ -226,28 +238,21 @@ RW, RH = 1080, 1920
 def f_reel(pid, line, rtl=False, sub=None, zone="bottom", tone="light", duration=7.0):
     """Animated still: slow push-in on the photo, sparkle + headline + sub fade up, logo lands last."""
     ink = WHITE if tone == "light" else INK
-    els = [{**photo(pexels(pid), 0, 0, RW, RH), "anim": {"type": "zoom", "from": 1.0, "to": 1.09}}]
-    if tone == "light":
-        els.append({**rect(0, 0, RW, RH, None), "fill_mode": "linear", "fill_x0": "50%",
-                    "fill_y0": "45%" if zone == "bottom" else "0%", "fill_x1": "50%",
-                    "fill_y1": "100%" if zone == "bottom" else "40%",
-                    "fill_color": ([{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": "rgba(28,20,14,0.5)"}]
-                                   if zone == "bottom" else
-                                   [{"offset": "0%", "color": "rgba(28,20,14,0.45)"}, {"offset": "100%", "color": "rgba(28,20,14,0)"}])})
+    sh = {"shadow": tone}
+    els = [{**photo(pexels(pid), 0, 0, RW, RH), "anim": {"type": "zoom", "from": 1.0, "to": 1.09}}, scrim(zone, tone, RW, RH)]
     y = 300 if zone == "top" else RH - 900   # keep clear of the Reels caption/buttons area
-    els.append({**sparkle(RW / 2, y - 60, 36, GOLD if tone == "dark" else WHITE), "anim": {"type": "pop", "start": 0.5, "dur": 0.5}})
+    els.append({**sparkle(RW / 2, y - 60, 40, GOLD), "anim": {"type": "pop", "start": 0.5, "dur": 0.5}})
     if rtl:
-        els.append({**text(M, y, RW - 2 * M, line, AR, 84, ink, "800", lh=130, align="center", rtl=True),
+        els.append({**text(M, y, RW - 2 * M, line, AR, 88, ink, "800", lh=130, align="center", rtl=True, **sh),
                     "anim": {"type": "fade_up", "start": 0.8, "dur": 0.9}})
-        if sub: els.append({**text(M, y + 240, RW - 2 * M, sub, AR, 36, ink, "500", align="center", rtl=True),
+        if sub: els.append({**text(M, y + 250, RW - 2 * M, sub, AR, 40, ink, "700", align="center", rtl=True, **sh),
                             "anim": {"type": "fade_up", "start": 1.6, "dur": 0.8}})
     else:
-        els.append({**text(M, y, RW - 2 * M, line, SERIF, 96, ink, lh=104, align="center", ls=-10),
+        els.append({**text(M, y, RW - 2 * M, line, SERIF, 100, ink, lh=104, align="center", ls=-10, **sh),
                     "anim": {"type": "fade_up", "start": 0.8, "dur": 0.9}})
-        if sub: els.append({**text(M, y + 250, RW - 2 * M, sub.upper(), MONO, 26, ink, "500", align="center", ls=140),
+        if sub: els.append({**text(M, y + 260, RW - 2 * M, sub.upper(), MONO, 32, ink, "500", align="center", ls=110, **sh),
                             "anim": {"type": "fade_up", "start": 1.6, "dur": 0.8}})
-    ly = y + 340
-    els.append({**logo(RW / 2 + 125, ly, 250, mono=WHITE if tone == "light" else None, anchor_right=True),
+    els.append({**logo(RW / 2 + 140, y + 350, 280, mono=WHITE if tone == "light" else INK, anchor_right=True),
                 "anim": {"type": "fade_up", "start": 2.4, "dur": 0.8}})
     return {"output_format": "mp4", "width": RW, "height": RH, "fill_color": INK, "duration": duration,
             "frame_rate": 30, "elements": els}
