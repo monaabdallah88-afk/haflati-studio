@@ -62,8 +62,16 @@ def el_html(e, pw, ph, idx):
     x, y = px(e.get("x", "50%"), pw), px(e.get("y", "50%"), ph)
     xa, ya = pct(e.get("x_anchor", "50%")), pct(e.get("y_anchor", "50%"))
     attrs = f'id="e{idx}" data-anim=\'{html.escape(json.dumps(e.get("anim", {})))}\''
-    pos = f"position:absolute;left:{x}px;top:{y}px;transform:translate({-xa * 100}%,{-ya * 100}%);"
+    if e.get("_in_stack"):   # laid out by the parent stack (flex column), only spacing applies
+        pos = f"position:relative;flex:none;margin-top:{e.get('_gap', 0)}px;align-self:{e.get('_align', 'center')};"
+    else:
+        pos = f"position:absolute;left:{x}px;top:{y}px;transform:translate({-xa * 100}%,{-ya * 100}%);"
     t = e["type"]
+    if t == "stack":
+        kids = "".join(el_html({**c, "_in_stack": True, "_gap": (0 if i == 0 else c.get("gap", e.get("gap", 24))),
+                                "_align": c.get("align_self", "center")}, w, ph, f"{idx}_{i}")
+                       for i, c in enumerate(e["children"]))
+        return f'<div {attrs} style="{pos}width:{w}px;display:flex;flex-direction:column">{kids}</div>'
     if t == "image":
         r = px(e.get("border_radius", "0 px"))
         if e["source"] == "logo":
