@@ -1,0 +1,6 @@
+out/
+tests/out/
+__pycache__/
+spec.json
+node_modules/
+assets/fonts/
