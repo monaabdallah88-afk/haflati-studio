@@ -46,6 +46,10 @@ def spans(s):
     return s
 
 
+SHADOW = {"light": "text-shadow:0 2px 3px rgba(20,14,10,.35),0 4px 28px rgba(20,14,10,.45)",
+          "dark": "text-shadow:0 1px 18px rgba(252,243,232,.55)"}
+
+
 def gradient(e):
     y0, y1 = pct(e.get("fill_y0", "0%")), pct(e.get("fill_y1", "100%"))
     stops = ", ".join(f"{st['color']} {100 * (y0 + pct(st['offset']) * (y1 - y0)):.1f}%" for st in e["fill_color"])
@@ -99,7 +103,8 @@ def el_html(e, pw, ph, idx):
         return (f'<div {attrs} class="tx" dir="{e["text_direction"]}" style="{pos}width:{w}px;'
                 f'font-family:\'{e["font_family"]}\';font-weight:{e["font_weight"]};font-style:{e.get("font_style", "normal")};'
                 f'font-size:{px(e["font_size"])}px;line-height:{lh};letter-spacing:{ls}em;color:{e["fill_color"]};'
-                f'text-align:{al};font-kerning:normal">{spans(e["text"])}</div>')
+                f'text-align:{al};font-kerning:normal;{SHADOW.get(e.get("shadow"), "")}" data-color="{" ".join([e["fill_color"]] + re.findall(r"\[color (#[0-9A-Fa-f]{6})\]", e["text"]))}" '
+                f'data-size="{px(e["font_size"])}">{spans(e["text"])}</div>')
     raise ValueError(t)
 
 
@@ -149,6 +154,40 @@ async def _ready(pg):
     await pg.wait_for_function("[...document.images].every(i => i.complete && i.naturalWidth > 0)", timeout=60000)
 
 
+def _lum(rgb):
+    def c(v):
+        v /= 255
+        return v / 12.92 if v <= 0.03928 else ((v + 0.055) / 1.055) ** 2.4
+    r, g, b = rgb
+    return 0.2126 * c(r) + 0.7152 * c(g) + 0.0722 * c(b)
+
+
+async def contrast_problems(pg):
+    """Screenshot the background behind every text block (text hidden) and compare it with the text colour.
+    Uses the worst 10% of background pixels, so a light patch behind white text is caught."""
+    from PIL import Image
+    import io
+    boxes = await pg.evaluate("""[...document.querySelectorAll('.tx')].map(el => { const r = el.getBoundingClientRect();
+        return {x: r.left, y: r.top, w: r.width, h: r.height, c: el.dataset.color, s: +el.dataset.size, t: el.innerText.slice(0, 40)}; })""")
+    await pg.add_style_tag(content=".tx{visibility:hidden !important}")
+    out = []
+    for b in boxes:
+        if b["w"] < 2 or b["h"] < 2:
+            continue
+        shot = await pg.screenshot(clip={"x": max(b["x"], 0), "y": max(b["y"], 0), "width": b["w"], "height": b["h"]})
+        px_ = sorted(_lum(p) for p in Image.open(io.BytesIO(shot)).convert("RGB").resize((60, 20)).getdata())
+        need = 3.0 if b["s"] >= 48 else 4.5
+        for c in b["c"].split():          # main colour + every accent colour used in the block
+            c = c.lstrip("#")
+            tl = _lum(tuple(int(c[i:i + 2], 16) for i in (0, 2, 4)))
+            bg = px_[int(len(px_) * 0.9)] if tl > 0.5 else px_[int(len(px_) * 0.1)]
+            ratio = (max(tl, bg) + 0.05) / (min(tl, bg) + 0.05)
+            if ratio < need:
+                out.append(f'low contrast {ratio:.1f}:1 (needs {need}:1) for #{c}: {b["t"]}')
+    await pg.evaluate("document.querySelectorAll('style').forEach(s => { if (s.textContent.includes('.tx{visibility')) s.remove(); })")
+    return out
+
+
 async def render_all(items, out_dir):
     """items: list of (stem, doc). Returns list of dicts {file, warnings}."""
     from playwright.async_api import async_playwright
@@ -162,7 +201,7 @@ async def render_all(items, out_dir):
             await _ready(pg)
             if doc["output_format"] == "mp4":
                 await pg.evaluate(f"__frame({doc['duration']})")
-                warnings = await pg.evaluate("__check()")
+                warnings = await pg.evaluate("__check()") + await contrast_problems(pg)
                 path = os.path.join(out_dir, stem + ".mp4")
                 fps, n = doc.get("frame_rate", 30), int(doc["duration"] * doc.get("frame_rate", 30))
                 ff = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "image2pipe", "-framerate", str(fps),
@@ -176,9 +215,9 @@ async def render_all(items, out_dir):
                 await pg.evaluate(f"__frame({doc['duration']})")
                 await pg.screenshot(path=os.path.join(out_dir, stem + "_cover.jpg"), type="jpeg", quality=92)
             else:
-                warnings = await pg.evaluate("__check()")
                 path = os.path.join(out_dir, stem + ".jpg")
                 await pg.screenshot(path=path, type="jpeg", quality=92)
+                warnings = await pg.evaluate("__check()") + await contrast_problems(pg)
             await pg.close()
             results.append({"file": path, "warnings": warnings})
         await b.close()

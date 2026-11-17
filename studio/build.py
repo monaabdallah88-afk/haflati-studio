@@ -84,20 +84,19 @@ def one(spec):
     rtl = lang == "ar"
     h = spec.get("headline", "")
     if fmt == "statement":
-        return L.f_statement(accent(h, L.GOLD, lang), spec["eyebrow_ar"], spec["categories"], spec["note"])
+        return L.f_statement(accent(h, L.GREEN, lang), spec["eyebrow_ar"], spec["categories"], spec["note"])
     if fmt == "problem":
         return L.f_problem(accent(h, L.GREEN, lang), spec["items"][:4], spec["tagline"])
     if fmt == "chips":
-        return L.f_chips(spec["eyebrow"], accent(h, L.WHITE, lang), spec["chips"][:6], spec["sign_off"])
+        return L.f_chips(spec["eyebrow"], accent(h, L.GREEN, lang), spec["chips"][:6], spec["sign_off"])
     if fmt == "bilingual":
-        return L.f_bilingual(accent(h, L.WHITE, "en"), spec["headline_ar"], spec["sub_ar"])
+        return L.f_bilingual(accent(h, L.GREEN, "en"), spec["headline_ar"], spec["sub_ar"])
     if fmt == "hero":
         w = max(200, min(760, int(len(spec["word"]) * 96)))
         return L.f_hero(spec["line1"], spec["word"], spec["eyebrow"], w)
     if fmt == "arch":
         bg = L.BANDS.get(spec["background"], L.CREAM)
-        col = L.GOLD if bg == L.CREAM else L.WHITE
-        return L.f_arch(bg, spec["eyebrow"], accent(h, col if not rtl else L.GREEN, lang), spec["sub"],
+        return L.f_arch(bg, spec["eyebrow"], accent(h, L.GREEN, lang), spec["sub"],
                         photo_info(spec)[0], spec["note"], rtl=rtl, outline=L.GOLD if bg == L.CREAM else L.WHITE)
     if fmt == "photo_line":
         pid, zone, tone = photo_info(spec)
@@ -105,12 +104,10 @@ def one(spec):
         return L.f_photo_line(pid, accent(h, col, lang), rtl=rtl, sub=spec.get("sub"), zone=zone, tone=tone)
     if fmt == "split":
         band = L.BANDS.get(spec["band"], L.PEACH)
-        col = L.WHITE if band == L.LILAC else L.GREEN
-        return L.f_split(photo_info(spec)[0], spec["eyebrow"], accent(h, col, lang), band, rtl=rtl)
+        return L.f_split(photo_info(spec)[0], spec["eyebrow"], accent(h, L.GREEN, lang), band, rtl=rtl)
     if fmt == "framed":
         frame = L.BANDS.get(spec["frame"], L.CREAM)
-        col = L.WHITE if frame == L.LILAC else L.GREEN
-        return L.f_framed(photo_info(spec)[0], accent(h, col, lang), frame, rtl=rtl)
+        return L.f_framed(photo_info(spec)[0], accent(h, L.GREEN, lang), frame, rtl=rtl)
     if fmt == "reel":
         pid, zone, tone = photo_info(spec)
         col = L.GOLD if tone == "light" else L.GREEN
