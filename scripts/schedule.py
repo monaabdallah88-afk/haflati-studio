@@ -110,6 +110,7 @@ save()
 code = result.get("post_code") or "post"
 os.makedirs("log/posts", exist_ok=True)
 entry = {k: result.get(k) for k in ("post_code", "ok", "errors", "urls", "covers", "zernio")}
+entry["errors"] = [str(e).replace('"', "'").replace("\\", "/") for e in entry.get("errors") or []]  # sheet-safe
 entry.update(lang=spec.get("lang"), format=spec.get("format"), logged_at=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
 json.dump(entry, open(f"log/posts/{code}.json", "w"), ensure_ascii=False, indent=2)
 run = lambda *a: subprocess.run(a)
