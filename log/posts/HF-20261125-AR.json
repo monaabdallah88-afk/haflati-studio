@@ -1,0 +1,16 @@
+{
+  "post_code": "HF-20261125-AR",
+  "ok": false,
+  "errors": [
+    "HF-20261125-AR.mp4: low contrast 2.2:1 (needs 3.0:1) for #2F6A3E: الضيافة تفاصيل وراها ناس"
+  ],
+  "urls": [],
+  "covers": null,
+  "zernio": {
+    "status": "preview",
+    "reason": "mode is 'preview', not 'live'"
+  },
+  "lang": "ar",
+  "format": "reel",
+  "logged_at": "2026-11-18T17:24:25Z"
+}
