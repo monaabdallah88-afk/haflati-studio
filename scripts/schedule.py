@@ -7,6 +7,7 @@ The spec may carry:
   scheduled_for  ISO time, e.g. 2026-11-20T12:30:00+04:00 (required unless publish_now)
   publish_now    true to post immediately (tests only)
   dry_run        true to render only and never contact Zernio
+  force_schedule true to schedule even when config/mode.txt is not "live" (tests only)
   action         "check_zernio" to only confirm the API key works (lists connected accounts)
 
 Writes the Zernio outcome into result.json and into log/posts/<post_code>.json, which the
@@ -61,9 +62,17 @@ if spec.get("action") == "check_zernio":
         result["zernio"]["instagram_account_found"] = any(a["id"] == ACCOUNT_ID for a in result["zernio"]["accounts"])
     save(); sys.exit(0)
 
+try:  # repo-wide switch: anything but "live" renders previews only (safe default)
+    MODE = open("config/mode.txt").read().strip().lower()
+except OSError:
+    MODE = "preview"
+if MODE != "live" and not spec.get("force_schedule"):
+    spec["dry_run"] = True
+
 want = spec.get("caption") and (spec.get("scheduled_for") or spec.get("publish_now"))
 if not want or spec.get("dry_run"):
-    result["zernio"] = {"status": "not_scheduled", "reason": "dry run" if spec.get("dry_run") else "no caption/time in spec"}
+    result["zernio"] = {"status": "preview" if spec.get("dry_run") else "not_scheduled",
+                        "reason": f"mode is {MODE!r}, not 'live'" if spec.get("dry_run") else "no caption/time in spec"}
 elif not result.get("ok"):
     result["zernio"] = {"status": "not_scheduled", "reason": "render or layout check failed"}
 elif not KEY:
