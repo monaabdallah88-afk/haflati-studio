@@ -19,8 +19,8 @@ def main():
     manifest = {"post_code": spec.get("post_code"), "ok": False, "files": [], "errors": []}
     try:
         # Photo text sits on a contrast layer; if the check still finds low contrast, re-render with a
-        # stronger layer (two steps) before giving up, so a slightly dark photo doesn't block the post.
-        for boost in range(3):
+        # stronger layer (two steps), then with the accent word in the text colour, before giving up.
+        for boost in range(4):
             L.SCRIM_BOOST = boost
             res = render(build(spec), out_dir)
             warnings = [w for r in res for w in r["warnings"]]
