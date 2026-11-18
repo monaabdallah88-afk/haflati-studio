@@ -1,0 +1,17 @@
+{
+  "post_code": "HF-20261119-AR",
+  "ok": false,
+  "errors": [
+    "HF-20261119-AR.mp4: low contrast 2.6:1 (needs 3.0:1) for #2F6A3E: ليلة الحنا تبدأ بإيد فنانة",
+    "HF-20261119-AR.mp4: low contrast 4.4:1 (needs 4.5:1) for #2C221B: سجّلوا • الرابط في البايو"
+  ],
+  "urls": [],
+  "covers": null,
+  "zernio": {
+    "status": "preview",
+    "reason": "mode is 'preview', not 'live'"
+  },
+  "lang": "ar",
+  "format": "reel",
+  "logged_at": "2026-11-18T17:21:56Z"
+}
