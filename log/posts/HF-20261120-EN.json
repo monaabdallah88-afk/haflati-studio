@@ -2,7 +2,7 @@
   "post_code": "HF-20261120-EN",
   "ok": false,
   "errors": [
-    "HF-20261120-EN_01.jpg: low contrast 1.6:1 (needs 3.0:1) for #2F6A3E: A graduation is more than a ceremony."
+    "HF-20261120-EN_01.jpg: low contrast 2.8:1 (needs 3.0:1) for #2F6A3E: A graduation is more than a ceremony."
   ],
   "urls": [],
   "covers": null,
@@ -12,5 +12,5 @@
   },
   "lang": "en",
   "format": "carousel",
-  "logged_at": "2026-11-18T17:21:50Z"
+  "logged_at": "2026-11-18T17:38:44Z"
 }
