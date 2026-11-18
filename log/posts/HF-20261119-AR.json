@@ -1,17 +1,18 @@
 {
   "post_code": "HF-20261119-AR",
-  "ok": false,
-  "errors": [
-    "HF-20261119-AR.mp4: low contrast 2.6:1 (needs 3.0:1) for #2F6A3E: ليلة الحنا تبدأ بإيد فنانة",
-    "HF-20261119-AR.mp4: low contrast 4.4:1 (needs 4.5:1) for #2C221B: سجّلوا • الرابط في البايو"
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261119-AR/HF-20261119-AR.mp4"
   ],
-  "urls": [],
-  "covers": null,
+  "covers": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261119-AR/HF-20261119-AR_cover.jpg"
+  ],
   "zernio": {
     "status": "preview",
     "reason": "mode is 'preview', not 'live'"
   },
   "lang": "ar",
   "format": "reel",
-  "logged_at": "2026-11-18T17:21:56Z"
+  "logged_at": "2026-11-18T17:40:32Z"
 }
