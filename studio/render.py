@@ -184,7 +184,7 @@ async def contrast_problems(pg):
             continue
         shot = await pg.screenshot(clip={"x": max(b["x"], 0), "y": max(b["y"], 0), "width": b["w"], "height": b["h"]})
         px_ = sorted(_lum(p) for p in Image.open(io.BytesIO(shot)).convert("RGB").resize((60, 20)).getdata())
-        need = 3.0 if b["s"] >= 48 else 4.5
+        need = 4.5  # AA for all text, headlines included: photo text must read clearly at a glance
         for c in b["c"].split():          # main colour + every accent colour used in the block
             c = c.lstrip("#")
             tl = _lum(tuple(int(c[i:i + 2], 16) for i in (0, 2, 4)))
