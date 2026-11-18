@@ -1,0 +1,17 @@
+{
+  "post_code": "HF-20261122-AR",
+  "ok": false,
+  "errors": [
+    "HF-20261122-AR_02.jpg: low contrast 3.5:1 (needs 4.5:1) for #2F6A3E: حلويات",
+    "HF-20261122-AR_05.jpg: low contrast 2.7:1 (needs 3.0:1) for #2F6A3E: جاهزين تشاركون في الموسم؟"
+  ],
+  "urls": [],
+  "covers": null,
+  "zernio": {
+    "status": "preview",
+    "reason": "mode is 'preview', not 'live'"
+  },
+  "lang": "ar",
+  "format": "carousel",
+  "logged_at": "2026-11-18T17:21:41Z"
+}
