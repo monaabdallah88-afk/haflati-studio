@@ -1,16 +1,18 @@
 {
   "post_code": "HF-20261125-AR",
-  "ok": false,
-  "errors": [
-    "HF-20261125-AR.mp4: low contrast 2.2:1 (needs 3.0:1) for #2F6A3E: الضيافة تفاصيل وراها ناس"
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR.mp4"
   ],
-  "urls": [],
-  "covers": null,
+  "covers": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_cover.jpg"
+  ],
   "zernio": {
     "status": "preview",
     "reason": "mode is 'preview', not 'live'"
   },
   "lang": "ar",
   "format": "reel",
-  "logged_at": "2026-11-18T17:24:25Z"
+  "logged_at": "2026-11-18T17:40:29Z"
 }
