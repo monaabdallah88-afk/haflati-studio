@@ -77,7 +77,7 @@ def pill(x, y, label, face, bg=CREAM, w=None):
             text(x + 66, y + 17, w - 80, label, SANS, 27, INK, "500")]
 
 def footer(dark=False, note=None, note_color=GREEN):
-    els = [logo(W - M, H - 112, 250, mono=WHITE if dark else None, anchor_right=True)]
+    els = [logo(W - M, H - 112, 250, mono=INK if dark else None, anchor_right=True)]  # one-colour ink logo on lilac/peach
     if note: els.append(text(M, H - 100, 560, note, SANS, 24, note_color, "500"))
     return els
 
@@ -171,7 +171,7 @@ def f_arch(bg, eyebrow, head, sub, pid, note, rtl=False, outline=GOLD, ink=INK):
            *top,
            text(tx, H - 190, tw, note, AR if rtl else SANS, 28 if rtl else 24, GREEN if (rtl and bg == CREAM) else (GREEN if bg == CREAM else INK),
                 "700" if rtl else "500", align=al, rtl=rtl),
-           logo(W - M if rtl else M, H - 120, 230, anchor_right=rtl)]
+           logo(W - M if rtl else M, H - 120, 230, mono=None if bg == CREAM else INK, anchor_right=rtl)]
     return doc(bg, els)
 
 SCRIM_BOOST = 0  # raised by __main__ when the contrast check fails (0 = normal, 1 = stronger, 2 = strongest)
@@ -233,11 +233,11 @@ def f_split(pid, eyebrow, head, band=PEACH, rtl=False):
     if rtl:
         els += [text(M, py + 80, W - 2 * M, eyebrow, AR, 32, INK, "700", align="right", rtl=True),
                 text(M, py + 130, W - 2 * M, head, AR, 68, INK, "800", lh=125, align="right", rtl=True),
-                logo(M, H - 110, 210)]
+                logo(M, H - 110, 210, mono=None if band == CREAM else INK)]
     else:
         els += [text(M, py + 80, W - 2 * M, eyebrow.upper(), MONO, 22, INK, "500", ls=120),
                 text(M, py + 125, W - 2 * M, head, SERIF, 86, INK, lh=100, ls=-10),
-                logo(W - M, H - 110, 210, mono=INK if band == PEACH else None, anchor_right=True)]
+                logo(W - M, H - 110, 210, mono=None if band == CREAM else INK, anchor_right=True)]
     return doc(band, els)
 
 def f_framed(pid, caption, frame=LILAC, rtl=False, accent=WHITE):
@@ -247,7 +247,7 @@ def f_framed(pid, caption, frame=LILAC, rtl=False, accent=WHITE):
            *smiley(fx + fw - 30 if not rtl else fx + 30, fy + fh - 10, 96, GOLD),
            text(fx, fy + fh + 60, fw, caption, AR if rtl else SERIF, 52 if rtl else 60, INK,
                 "800" if rtl else "400", lh=110, align="right" if rtl else "left", rtl=rtl),
-           logo(fx if rtl else fx + fw, H - 100, 200, mono=INK if frame == PEACH else None, anchor_right=not rtl)]
+           logo(fx if rtl else fx + fw, H - 100, 200, mono=None if frame == CREAM else INK, anchor_right=not rtl)]
     return doc(frame, els)
 
 
