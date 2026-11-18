@@ -1,0 +1,14 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "haflati-ffmpeg-shim"
+version = "1.0"
+dependencies = ["imageio-ffmpeg"]
+
+[project.scripts]
+ffmpeg = "haflati_ffmpeg:main"
+
+[tool.setuptools]
+py-modules = ["haflati_ffmpeg"]
