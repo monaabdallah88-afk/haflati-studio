@@ -1,16 +1,20 @@
 {
   "post_code": "HF-20261120-EN",
-  "ok": false,
-  "errors": [
-    "HF-20261120-EN_01.jpg: low contrast 2.8:1 (needs 3.0:1) for #2F6A3E: A graduation is more than a ceremony."
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261120-EN/HF-20261120-EN_01.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261120-EN/HF-20261120-EN_02.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261120-EN/HF-20261120-EN_03.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261120-EN/HF-20261120-EN_04.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261120-EN/HF-20261120-EN_05.jpg"
   ],
-  "urls": [],
-  "covers": null,
+  "covers": [],
   "zernio": {
     "status": "preview",
     "reason": "mode is 'preview', not 'live'"
   },
   "lang": "en",
   "format": "carousel",
-  "logged_at": "2026-11-18T17:38:44Z"
+  "logged_at": "2026-11-18T17:55:22Z"
 }
