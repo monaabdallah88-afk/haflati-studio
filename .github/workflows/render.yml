@@ -3,7 +3,8 @@ name: render
 # Make starts this with a repository_dispatch (event_type "render") whose client_payload is:
 #   { "spec": { ...post spec... }, "callback": "https://hook.eu1.make.com/..." }
 # Output files are committed to renders/ and served publicly through GitHub Pages,
-# then the result (public URLs or errors) is POSTed back to the Make webhook.
+# scheduled on Instagram through Zernio when the spec has a caption and time,
+# then the result (public URLs, Zernio status or errors) is POSTed back to the Make webhook.
 on:
   repository_dispatch:
     types: [render]
@@ -15,10 +16,6 @@ on:
 
 permissions:
   contents: write
-
-concurrency:
-  group: render
-  cancel-in-progress: false
 
 jobs:
   render:
@@ -45,7 +42,6 @@ jobs:
           cp node_modules/@fontsource/jetbrains-mono/files/jetbrains-mono-latin-{400,500}-normal.woff2 assets/fonts/
           cp node_modules/@fontsource/tajawal/files/tajawal-{arabic,latin}-{400,500,700,800}-normal.woff2 assets/fonts/
           python -m playwright install --with-deps chromium
-          command -v ffmpeg || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg)
 
       - name: Write spec
         env:
@@ -64,6 +60,12 @@ jobs:
         run: python scripts/publish.py out
         env:
           REPO: ${{ github.repository }}
+
+      - name: Schedule on Instagram (Zernio)
+        if: always()
+        env:
+          ZERNIO_API_KEY: ${{ secrets.ZERNIO_API_KEY }}
+        run: python scripts/schedule.py spec.json out/result.json
 
       - name: Report back to Make
         if: always()
