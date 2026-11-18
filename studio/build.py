@@ -35,6 +35,13 @@ MAX_CHARS = {  # headline limits that keep text inside its area (checked again b
 }
 
 
+GREEN_TEXT = "#1F4D2B"  # deeper brand green: keeps accent words at 4.5:1+ on lilac and peach
+
+
+def green_on(bg):
+    return L.GREEN if bg == L.CREAM else GREEN_TEXT
+
+
 class SpecError(ValueError):
     pass
 
@@ -86,17 +93,17 @@ def one(spec):
     if fmt == "statement":
         return L.f_statement(accent(h, L.GREEN, lang), spec["eyebrow_ar"], spec["categories"], spec["note"])
     if fmt == "problem":
-        return L.f_problem(accent(h, L.GREEN, lang), spec["items"][:4], spec["tagline"])
+        return L.f_problem(accent(h, green_on(L.PEACH), lang), spec["items"][:4], spec["tagline"])
     if fmt == "chips":
-        return L.f_chips(spec["eyebrow"], accent(h, L.GREEN, lang), spec["chips"][:6], spec["sign_off"])
+        return L.f_chips(spec["eyebrow"], accent(h, green_on(L.LILAC), lang), spec["chips"][:6], spec["sign_off"])
     if fmt == "bilingual":
-        return L.f_bilingual(accent(h, L.GREEN, "en"), spec["headline_ar"], spec["sub_ar"])
+        return L.f_bilingual(accent(h, green_on(L.LILAC), "en"), spec["headline_ar"], spec["sub_ar"])
     if fmt == "hero":
         w = max(200, min(760, int(len(spec["word"]) * 96)))
         return L.f_hero(spec["line1"], spec["word"], spec["eyebrow"], w)
     if fmt == "arch":
         bg = L.BANDS.get(spec["background"], L.CREAM)
-        return L.f_arch(bg, spec["eyebrow"], accent(h, L.GREEN, lang), spec["sub"],
+        return L.f_arch(bg, spec["eyebrow"], accent(h, green_on(bg), lang), spec["sub"],
                         photo_info(spec)[0], spec["note"], rtl=rtl, outline=L.GOLD if bg == L.CREAM else L.WHITE)
     if fmt == "photo_line":
         pid, zone, tone = photo_info(spec)
@@ -104,10 +111,10 @@ def one(spec):
         return L.f_photo_line(pid, accent(h, col, lang), rtl=rtl, sub=spec.get("sub"), zone=zone, tone=tone)
     if fmt == "split":
         band = L.BANDS.get(spec["band"], L.PEACH)
-        return L.f_split(photo_info(spec)[0], spec["eyebrow"], accent(h, L.GREEN, lang), band, rtl=rtl)
+        return L.f_split(photo_info(spec)[0], spec["eyebrow"], accent(h, green_on(band), lang), band, rtl=rtl)
     if fmt == "framed":
         frame = L.BANDS.get(spec["frame"], L.CREAM)
-        return L.f_framed(photo_info(spec)[0], accent(h, L.GREEN, lang), frame, rtl=rtl)
+        return L.f_framed(photo_info(spec)[0], accent(h, green_on(frame), lang), frame, rtl=rtl)
     if fmt == "reel":
         pid, zone, tone = photo_info(spec)
         col = L.WHITE if tone == "light" else (L.INK if L.SCRIM_BOOST >= 3 else L.GREEN)
