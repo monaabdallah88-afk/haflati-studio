@@ -6,6 +6,7 @@ invalid or the layout check finds a problem (so nothing broken is ever published
 import json, os, sys
 from .build import build, SpecError
 from .render import render
+from . import layouts as L
 
 
 def main():
@@ -17,10 +18,18 @@ def main():
         spec = json.loads(spec)
     manifest = {"post_code": spec.get("post_code"), "ok": False, "files": [], "errors": []}
     try:
-        items = build(spec)
-        res = render(items, out_dir)
+        # Photo text sits on a contrast layer; if the check still finds low contrast, re-render with a
+        # stronger layer (two steps) before giving up, so a slightly dark photo doesn't block the post.
+        for boost in range(3):
+            L.SCRIM_BOOST = boost
+            res = render(build(spec), out_dir)
+            warnings = [w for r in res for w in r["warnings"]]
+            if not any("low contrast" in w for w in warnings):
+                break
         manifest["files"] = [os.path.basename(r["file"]) for r in res]
         manifest["errors"] = [f"{os.path.basename(r['file'])}: {w}" for r in res for w in r["warnings"]]
+        if boost:
+            manifest["contrast_boost"] = boost
         manifest["ok"] = not manifest["errors"]
     except SpecError as e:
         manifest["errors"] = [str(e)]

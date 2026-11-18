@@ -174,14 +174,22 @@ def f_arch(bg, eyebrow, head, sub, pid, note, rtl=False, outline=GOLD, ink=INK):
            logo(W - M if rtl else M, H - 120, 230, anchor_right=rtl)]
     return doc(bg, els)
 
+SCRIM_BOOST = 0  # raised by __main__ when the contrast check fails (0 = normal, 1 = stronger, 2 = strongest)
+
+
 def scrim(zone, tone, w, h):
     """Contrast layer between photo and text: dark fade under white text, light veil under dark text."""
+    b = min(SCRIM_BOOST, 2)
     if tone == "light":
-        stops = [{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": "rgba(28,20,14,0.84)"}]
-        y0, y1 = ("35%", "100%") if zone == "bottom" else ("45%", "0%")
+        a = (0.84, 0.9, 0.95)[b]
+        stops = [{"offset": "0%", "color": "rgba(28,20,14,0)"}, {"offset": "100%", "color": f"rgba(28,20,14,{a})"}]
+        y0, y1 = (("35%", "100%"), ("25%", "100%"), ("15%", "100%"))[b] if zone == "bottom" else \
+                 (("45%", "0%"), ("55%", "0%"), ("65%", "0%"))[b]
     else:
-        stops = [{"offset": "0%", "color": "rgba(252,243,232,0)"}, {"offset": "100%", "color": "rgba(252,243,232,0.62)"}]
-        y0, y1 = ("40%", "100%") if zone == "bottom" else ("50%", "0%")
+        a = (0.62, 0.82, 0.92)[b]
+        stops = [{"offset": "0%", "color": "rgba(252,243,232,0)"}, {"offset": "100%", "color": f"rgba(252,243,232,{a})"}]
+        y0, y1 = (("40%", "100%"), ("30%", "100%"), ("20%", "100%"))[b] if zone == "bottom" else \
+                 (("50%", "0%"), ("60%", "0%"), ("70%", "0%"))[b]
     if zone == "top":
         stops = [{"offset": "0%", "color": stops[1]["color"]}, {"offset": "100%", "color": stops[0]["color"]}]
         y0, y1 = y1, y0
@@ -223,7 +231,7 @@ def f_split(pid, eyebrow, head, band=PEACH, rtl=False):
     els = [photo(pexels(pid), 0, 0, W, py), rect(0, py, W, H - py, band),
            *sunburst(W - M - 50 if not rtl else M + 50, py, 110)]
     if rtl:
-        els += [text(M, py + 80, W - 2 * M, eyebrow, AR, 32, INK if band == LILAC else GREEN, "700", align="right", rtl=True),
+        els += [text(M, py + 80, W - 2 * M, eyebrow, AR, 32, INK, "700", align="right", rtl=True),
                 text(M, py + 130, W - 2 * M, head, AR, 68, INK, "800", lh=125, align="right", rtl=True),
                 logo(M, H - 110, 210)]
     else:
