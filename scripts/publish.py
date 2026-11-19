@@ -19,7 +19,8 @@ if man.get("ok"):
     run("git", "config", "user.name", "haflati-studio-bot")
     run("git", "config", "user.email", "actions@users.noreply.github.com")
     run("git", "add", rel)
-    run("git", "commit", "-m", f"render {code}")
+    if subprocess.run(["git", "diff", "--cached", "--quiet"]).returncode != 0:  # identical re-render: nothing new to commit
+        run("git", "commit", "-m", f"render {code}")
     for attempt in range(5):                      # other renders may have pushed meanwhile
         if subprocess.run(["git", "pull", "--rebase", "-q"]).returncode == 0 and \
            subprocess.run(["git", "push", "-q"]).returncode == 0:
