@@ -1,16 +1,16 @@
 {
   "post_code": "HF-20261119-EN",
-  "ok": true,
-  "errors": [],
-  "urls": [
-    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261119-EN/HF-20261119-EN.jpg"
+  "ok": false,
+  "errors": [
+    "render job failed early"
   ],
-  "covers": [],
+  "urls": [],
+  "covers": null,
   "zernio": {
-    "status": "preview",
-    "reason": "mode is 'preview', not 'live'"
+    "status": "not_scheduled",
+    "reason": "render or layout check failed"
   },
   "lang": "en",
   "format": "statement",
-  "logged_at": "2026-11-18T17:27:31Z"
+  "logged_at": "2026-11-19T18:13:09Z"
 }
