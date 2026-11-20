@@ -1,16 +1,16 @@
 {
   "post_code": "HF-20261121-AR",
-  "ok": true,
-  "errors": [],
-  "urls": [
-    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261121-AR/HF-20261121-AR.jpg"
+  "ok": false,
+  "errors": [
+    "photo '38230058' is not in the approved photo library"
   ],
-  "covers": [],
+  "urls": [],
+  "covers": null,
   "zernio": {
-    "status": "preview",
-    "reason": "mode is 'preview', not 'live'"
+    "status": "not_scheduled",
+    "reason": "render or layout check failed"
   },
   "lang": "ar",
   "format": "photo_line",
-  "logged_at": "2026-11-18T17:27:30Z"
+  "logged_at": "2026-11-20T04:00:54Z"
 }
