@@ -11,10 +11,14 @@
   ],
   "covers": [],
   "zernio": {
-    "status": "preview",
-    "reason": "mode is 'preview', not 'live'"
+    "http": 201,
+    "post_id": "6b01177993acc54dd1c2af91",
+    "status": "scheduled",
+    "message": "Post scheduled successfully",
+    "warnings": null,
+    "scheduled_for": "2026-11-22T12:30:00+04:00"
   },
   "lang": "ar",
   "format": "carousel",
-  "logged_at": "2026-11-18T18:34:56Z"
+  "logged_at": "2026-11-21T04:00:58Z"
 }
