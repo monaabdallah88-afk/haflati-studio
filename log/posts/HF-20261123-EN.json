@@ -7,14 +7,14 @@
   ],
   "covers": [],
   "zernio": {
-    "http": 201,
+    "http": 200,
     "post_id": "6b0268f25fa9e971770eabcc",
     "status": "scheduled",
-    "message": "Post scheduled successfully",
+    "message": "Post already exists (idempotent retry)",
     "warnings": null,
     "scheduled_for": "2026-11-23T20:00:00+04:00"
   },
   "lang": "en",
-  "format": "chips",
-  "logged_at": "2026-11-22T04:00:50Z"
+  "format": "problem",
+  "logged_at": "2026-11-22T04:01:03Z"
 }
