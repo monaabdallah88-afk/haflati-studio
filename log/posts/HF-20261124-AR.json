@@ -3,18 +3,20 @@
   "ok": true,
   "errors": [],
   "urls": [
-    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261124-AR/HF-20261124-AR.jpg"
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261124-AR/HF-20261124-AR.mp4"
   ],
-  "covers": [],
+  "covers": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261124-AR/HF-20261124-AR_cover.jpg"
+  ],
   "zernio": {
-    "http": 201,
+    "http": 200,
     "post_id": "6b03ba71350ea41a1daacad5",
     "status": "scheduled",
-    "message": "Post scheduled successfully",
+    "message": "Post already exists (idempotent retry)",
     "warnings": null,
     "scheduled_for": "2026-11-24T12:30:00+04:00"
   },
   "lang": "ar",
-  "format": "framed",
-  "logged_at": "2026-11-23T04:00:50Z"
+  "format": "reel",
+  "logged_at": "2026-11-23T04:02:17Z"
 }
