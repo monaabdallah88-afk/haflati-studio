@@ -3,16 +3,22 @@
   "ok": true,
   "errors": [],
   "urls": [
-    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR.mp4"
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_01.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_02.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_03.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_04.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_05.jpg"
   ],
-  "covers": [
-    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261125-AR/HF-20261125-AR_cover.jpg"
-  ],
+  "covers": [],
   "zernio": {
-    "status": "preview",
-    "reason": "mode is 'preview', not 'live'"
+    "http": 201,
+    "post_id": "6b050c26533b60fb2444d7b4",
+    "status": "scheduled",
+    "message": "Post scheduled successfully",
+    "warnings": null,
+    "scheduled_for": "2026-11-25T12:30:00+04:00"
   },
   "lang": "ar",
-  "format": "reel",
-  "logged_at": "2026-11-18T18:24:27Z"
+  "format": "carousel",
+  "logged_at": "2026-11-24T04:01:42Z"
 }
