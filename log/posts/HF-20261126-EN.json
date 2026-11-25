@@ -1,0 +1,16 @@
+{
+  "post_code": "HF-20261126-EN",
+  "ok": false,
+  "errors": [
+    "HF-20261126-EN.jpg: overlap: 'مشروع صغير لمناسبات كبيرة' / 'سجّلوا شغلكم في حفلاتي • الرابط في الباي'"
+  ],
+  "urls": [],
+  "covers": null,
+  "zernio": {
+    "status": "not_scheduled",
+    "reason": "render or layout check failed"
+  },
+  "lang": "en",
+  "format": "bilingual",
+  "logged_at": "2026-11-25T04:00:45Z"
+}
