@@ -1,0 +1,24 @@
+{
+  "post_code": "HF-20261127-EN",
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261127-EN/HF-20261127-EN_01.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261127-EN/HF-20261127-EN_02.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261127-EN/HF-20261127-EN_03.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261127-EN/HF-20261127-EN_04.jpg",
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261127-EN/HF-20261127-EN_05.jpg"
+  ],
+  "covers": [],
+  "zernio": {
+    "http": 201,
+    "post_id": "6b07af339ddb4cb4240b0b4e",
+    "status": "scheduled",
+    "message": "Post scheduled successfully",
+    "warnings": null,
+    "scheduled_for": "2026-11-27T20:00:00+04:00"
+  },
+  "lang": "en",
+  "format": "carousel",
+  "logged_at": "2026-11-26T04:01:55Z"
+}
