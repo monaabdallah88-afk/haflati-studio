@@ -1,0 +1,22 @@
+{
+  "post_code": "HF-20261128-EN",
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261128-EN/HF-20261128-EN.mp4"
+  ],
+  "covers": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261128-EN/HF-20261128-EN_cover.jpg"
+  ],
+  "zernio": {
+    "http": 201,
+    "post_id": "6b0900ced3218ad286778348",
+    "status": "scheduled",
+    "message": "Post scheduled successfully",
+    "warnings": null,
+    "scheduled_for": "2026-11-28T20:00:00+04:00"
+  },
+  "lang": "en",
+  "format": "reel",
+  "logged_at": "2026-11-27T04:02:22Z"
+}
