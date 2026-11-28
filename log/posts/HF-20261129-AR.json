@@ -1,0 +1,20 @@
+{
+  "post_code": "HF-20261129-AR",
+  "ok": true,
+  "errors": [],
+  "urls": [
+    "https://monaabdallah88-afk.github.io/haflati-studio/renders/2026-11/HF-20261129-AR/HF-20261129-AR.jpg"
+  ],
+  "covers": [],
+  "zernio": {
+    "http": 201,
+    "post_id": "6b0a521291bddcef428978cf",
+    "status": "scheduled",
+    "message": "Post scheduled successfully",
+    "warnings": null,
+    "scheduled_for": "2026-11-29T12:30:00+04:00"
+  },
+  "lang": "ar",
+  "format": "photo_line",
+  "logged_at": "2026-11-28T04:01:23Z"
+}
